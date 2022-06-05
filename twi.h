@@ -38,11 +38,11 @@ typedef enum
 	DATA_NACK = 0x30
 } status_code_t;
 
-void i2c_master_mode_init(uint32_t scl_frequence);
-void i2c_slave_mode_init(uint8_t addr);
-void i2c_transmit_byte(uint8_t byte);
-uint8_t i2c_recive_byte(void);
-uint8_t i2c_master_action(twi_action_t action);
-uint8_t i2c_slave_action(twi_action_t action);
+void twi_master_mode_init(uint32_t scl_frequence);
+void twi_slave_mode_init(uint8_t addr);
+void twi_transmit_byte(uint8_t byte);
+uint8_t twi_recive_byte(void);
+uint8_t twi_master_action(twi_action_t action);
+uint8_t twi_slave_action(twi_action_t action);
 
 #endif /* TWI_H_ */
