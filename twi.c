@@ -7,8 +7,8 @@
 
 #include "twi.h"
 
-void twi_master_mode_init(uint32_t frequence){
-	TWBR = ((F_CPU * 2 * (4^(TWSR & 0x03))) / frequence) - 16;
+void twi_master_mode_init(uint32_t scl_frequence){
+	TWBR = ((F_CPU * 2 * (4^(TWSR & 0x03))) / scl_frequence) - 16;
 	TWCR = (1<<TWEN);
 }
 
@@ -25,7 +25,7 @@ uint8_t twi_recive_byte(void){
 	return TWDR;
 }
 
-uint8_t twi_master_action(uint8_t action){
+uint8_t twi_master_action(twi_action_t action){
 	switch (action){
 		case TWI_START:
 		case TWI_REPEAT_START:
@@ -47,14 +47,14 @@ uint8_t twi_master_action(uint8_t action){
 		default:
 			TWCR = (1<<TWEN);
 	}
-	if(action < I2C_STOP) 
+	if(action < TWI_STOP) 
 	{
 		while (!(TWCR & (1<<TWINT)));
 	}
 	return (TWSR & 0xF8);
 }
 
-uint8_t twi_slave_action(uint8_t action){
+uint8_t twi_slave_action(twi_action_t action){
 	switch (action){
 		case TWI_START:
 			TWCR = (1<<TWINT) | (1<<TWSTA) | (1<<TWEN);
@@ -74,7 +74,7 @@ uint8_t twi_slave_action(uint8_t action){
 		default:
 			TWCR = (1<<TWEN);
 	}
-	if(action < I2C_STOP)
+	if(action < TWI_STOP)
 	{
 		while (!(TWCR & (1<<TWINT)));
 	}
