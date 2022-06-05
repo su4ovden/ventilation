@@ -2,7 +2,7 @@
  * TWI Library 
  *
  * Created: 02.08.2020 11:00:44
- *  Author: su4ovdan
+ * Author: su4ovden
  */ 
 
 #include "twi.h"

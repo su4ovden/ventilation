@@ -2,7 +2,7 @@
  * TWI Library Header
  *
  * Created: 02.08.2020 10:59:19
- *  Author: su4ovdan
+ * Author: su4ovden
  */ 
 
 #ifndef TWI_H_
