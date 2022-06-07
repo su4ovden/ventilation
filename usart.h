@@ -23,7 +23,6 @@
 #define RECIVER_ENABLE		0x10
 
 #define MULTI_PROCESSOR_MODE 0x01
-
 /* USART MODE END */
 
 /* FRAME FORMAT BEGIN */
@@ -40,6 +39,11 @@
 #define DATA8BIT 0x03
 #define DATA9BIT 0x07	/* NOT USED IN THIS LIBRARY */
 /* FRAME FORMAT END */
+
+/* PRESETS */
+#define DEFAULT_MODE (ASYNC_USART | RX_COMPLETE_IE | TRANSMITTER_ENABLE | RECIVER_ENABLE)
+#define DEFAULT_FRAME_FORMAT (DATA8BIT | PARITY_DISABLED | STOP1BIT)
+/* PRESETS END */
 
 void usart_transmit_byte(uint8_t byte);
 void usart_transmit_bytes(uint8_t* byte_array, uint8_t array_size);
