@@ -54,16 +54,28 @@ void sensor_read_row_data(uint8_t* data, uint8_t length)
 	twi_master_action(TWI_STOP);
 }
 
-void sensor_get_register_data(sensor_data_t* sensor_data, uint8_t start_address, uint8_t length)
+void sensor_get_environment_data(sensor_data_t* sensor_data)
 {
-	uint8_t sending_data_array[3] = {READING_REGISTER_DATA, start_address, length};
-	uint8_t recieved_data_buffer[length + 4]; // length - length of requested information, 4 - length of additional information
+	uint8_t sending_data_array[3] = {READING_REGISTER_DATA, 0x00, 4};
+	uint8_t recieved_data_buffer[8]; // 4 - length of requested information, 4 - length of additional information
+	uint8_t* struct_pointer = (uint8_t*)sensor_data;
 	
 	sensor_send_row_data(sending_data_array, 3);
 	_delay_ms(2);
-	sensor_read_row_data(recieved_data_buffer, length + 4);
+	sensor_read_row_data(recieved_data_buffer, 8);
 	
-	sensor_data->humidity = (recieved_data_buffer[2] << 8) | recieved_data_buffer[3];
-	sensor_data->temperature = (recieved_data_buffer[4] << 8) | recieved_data_buffer[5];
+	for(uint8_t i = 0; i < 4; i++)
+	{
+		struct_pointer[i] = recieved_data_buffer[2 + i];
+	}
+}
+
+void sensor_get_register_data(uint8_t* data_array, uint8_t start_address, uint8_t length)
+{
+	uint8_t sending_data_array[3] = {READING_REGISTER_DATA, start_address, length};
+	
+	sensor_send_row_data(sending_data_array, 3);
+	_delay_ms(2);
+	sensor_read_row_data(data_array, length + 4);
 }
 

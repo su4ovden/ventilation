@@ -20,7 +20,7 @@ typedef enum
 	WRITE_MULTIPLE_REGISTERS = 0x10
 } function_code_t;
 
-typedef struct _packed_
+typedef struct
 {
 	uint16_t humidity;
 	uint16_t temperature;
@@ -29,6 +29,7 @@ typedef struct _packed_
 void sensor_wakeup(void);
 void sensor_send_row_data(uint8_t* data, uint8_t length);
 void sensor_read_row_data(uint8_t* data, uint8_t length);
-void sensor_get_register_data(sensor_data_t* sensor_data, uint8_t start_address, uint8_t length);
+void sensor_get_environment_data(sensor_data_t* sensor_data);
+void sensor_get_register_data(uint8_t* data_array, uint8_t start_address, uint8_t length);
 
 #endif /* AM2320_H_ */
