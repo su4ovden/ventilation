@@ -19,20 +19,25 @@
 #define LED_YELLOW_OFF (PORTC &= ~(1<<PINC1))
 
 sensor_data_t sensor_data;
-volatile uint8_t last_byte;
+volatile uint8_t rx_byte;
 
 ISR(USART_RXC_vect)
 {
-	last_byte = UDR;
-	if(last_byte == '1')
+	rx_byte = UDR;
+	switch(rx_byte)
 	{
-		LED_GREEN_ON;
-		usart_transmit_string("ON\r\n");
-	}
-	else
-	{
-		LED_GREEN_OFF;
-		usart_transmit_string("OFF\r\n");
+		case 'a':
+			LED_GREEN_OFF;
+			break;
+		case 'A':
+			LED_GREEN_ON;
+			break;
+		case 'b':
+			LED_YELLOW_OFF;
+			break;
+		case 'B':
+			LED_YELLOW_ON;
+			break;
 	}
 }
 
@@ -62,8 +67,17 @@ void timer2_init(void)
 	OCR2 = 100;
 }
 
+void value_to_string(uint8_t* char_array, uint16_t value)
+{
+	char_array[0] = (value / 100 % 10) + '0';
+	char_array[1] = (value / 10 % 10) + '0';
+	char_array[2] = value % 10 + '0';
+	char_array[3] = 0;
+}
+
 int main(void)
 {
+	uint8_t char_arr[5];
 	portb_init();
 	portc_init();
 	
@@ -78,14 +92,22 @@ int main(void)
 	timer1_init();
 	timer2_init();
 	twi_master_mode_init(100000);
-	usart_init(DEFAULT_MODE, DEFAULT_FRAME_FORMAT, 9600);
+	usart_init(DEFAULT_MODE, DEFAULT_FRAME_FORMAT, 38400);
 	
 	SREG |= (1<<7);
 	
     while (1) 
     {	
-		usart_transmit_string("Hello from firmware!\r\n");
-		_delay_ms(1000);
+		sensor_wakeup();
+		_delay_ms(2);
+		sensor_get_environment_data(&sensor_data);
+		value_to_string(char_arr, sensor_data.humidity);
+		usart_transmit_string((char*) char_arr);
+		usart_transmit_byte('|');
+		value_to_string(char_arr, sensor_data.temperature);
+		usart_transmit_string((char*) char_arr);
+		usart_transmit_byte('\n');
+		_delay_ms(2200);
     }
 }
 
