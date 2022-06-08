@@ -9,6 +9,7 @@
 #include <util/delay.h>
 #include "twi.h"
 #include "am2320.h"
+#include "usart.h"
 
 sensor_data_t sensor_data;
 
@@ -29,7 +30,7 @@ void timer1_init(void)
 void timer2_init(void)
 {
 	TCCR2 |= (1<<WGM21) | (1<<WGM20) | (1<<COM21) | (1<<CS21);
-	OCR2 = 10;
+	OCR2 = 100;
 }
 
 int main(void)
@@ -37,11 +38,21 @@ int main(void)
 	portb_init();
 	timer1_init();
 	timer2_init();
-	twi_master_mode_init(100000);
+	twi_master_mode_init(10000);
+	usart_init(DEFAULT_MODE, DEFAULT_FRAME_FORMAT, 57200);
+	
+	sensor_wakeup();
+	_delay_ms(10);
+	sensor_get_environment_data(&sensor_data);
+	_delay_ms(2200);
 	
     while (1) 
-    {		
-		
+    {	
+		usart_transmit_bytes((uint8_t*) &sensor_data, 2);
+		sensor_wakeup();
+		_delay_ms(10);
+		sensor_get_environment_data(&sensor_data);
+		_delay_ms(2200);
     }
 }
 
