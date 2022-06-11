@@ -2,6 +2,8 @@
  * TWI Library Header
  *
  * Created: 02.08.2020 10:59:19
+ * Updated: 11.06.2022 15:15:28
+ *
  * Author: su4ovden
  */ 
 
@@ -19,13 +21,18 @@ typedef enum
 
 typedef enum
 {
-	TWI_START,
-	TWI_REPEAT_START,
-	TWI_TRANSMIT,
-	TWI_RETURN_ACK,
-	TWI_RETURN_NACK,
-	TWI_STOP_FOLLOWED_START,
-	TWI_STOP	
+	M_START = 0xA4,
+	M_REPEAT_START = 0xA4,
+	M_TRANSMIT = 0x84,
+	M_RETURN_NACK = 0x84,
+	M_RETURN_ACK = 0xC4,
+	M_STOP_FOLLOWED_START = 0xB4,
+	M_STOP = 0x94,
+	S_START = 0xA4,
+	S_TRANSMIT = 0x84,
+	S_RETURN_NACK = 0x80,
+	S_RETURN_ACK = 0xC0,
+	S_STOP = 0x94,
 } twi_action_t;
 
 typedef enum

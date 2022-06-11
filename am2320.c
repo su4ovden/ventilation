@@ -9,49 +9,49 @@
 
 void sensor_wakeup(void)
 {
-	twi_master_action(TWI_START);
+	twi_master_action(M_START);
 	
 	twi_transmit_byte(SENSOR_ADDRESS | W);
-	twi_master_action(TWI_TRANSMIT);
+	twi_master_action(M_TRANSMIT);
 	
 	_delay_us(850);
 	
-	twi_master_action(TWI_STOP);
+	twi_master_action(M_STOP);
 }
 
 void sensor_send_row_data(uint8_t* data, uint8_t length)
 {
-	twi_master_action(TWI_START);
+	twi_master_action(M_START);
 	
 	twi_transmit_byte(SENSOR_ADDRESS | W);
-	twi_master_action(TWI_TRANSMIT);
+	twi_master_action(M_TRANSMIT);
 	
 	for(uint8_t i = 0; i < length; i++)
 	{
 		twi_transmit_byte(data[i]);
-		twi_master_action(TWI_TRANSMIT);
+		twi_master_action(M_TRANSMIT);
 	}
 	
-	twi_master_action(TWI_STOP);
+	twi_master_action(M_STOP);
 }
 
 void sensor_read_row_data(uint8_t* data, uint8_t length)
 {
-	twi_master_action(TWI_START);
+	twi_master_action(M_START);
 	
 	twi_transmit_byte(SENSOR_ADDRESS | R);
-	twi_master_action(TWI_TRANSMIT);
+	twi_master_action(M_TRANSMIT);
 	
 	for(uint8_t i = 0; i < length - 1; i++)
 	{
-		twi_master_action(TWI_RETURN_ACK);
+		twi_master_action(M_RETURN_ACK);
 		data[i] = twi_recive_byte();
 	}
 	
 	data[length - 1] = twi_recive_byte();
-	twi_master_action(TWI_RETURN_NACK);
+	twi_master_action(M_RETURN_NACK);
 	
-	twi_master_action(TWI_STOP);
+	twi_master_action(M_STOP);
 }
 
 void sensor_get_environment_data(sensor_data_t* sensor_data)
